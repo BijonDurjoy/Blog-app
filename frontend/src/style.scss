@@ -118,7 +118,7 @@ $lightGreen : #9ed4bb;
                 .img{
                     flex: 2;
                     position: relative;
-                    
+
                     img{
                         width: 300px;
                         max-height: 400px;
@@ -153,6 +153,63 @@ $lightGreen : #9ed4bb;
                         }
                     }
                 }
+            }
+        }
+
+        //Single Page
+        .single{
+            display: flex;
+            gap: 50px;
+
+            .content{
+                flex: 5;
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+
+                img{
+                    width: 800px;
+                    height: 300px;
+                    object-fit: cover;
+                }
+                .user{
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 14px;
+                    img{
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+
+                    span{
+                        font-weight: bold;
+                    }
+                }
+
+                .edit{
+                    display: flex;
+                    gap: 5px;
+
+                    img{
+                        width: 20px;
+                        height: 20px;
+                        cursor: pointer;
+                    }
+                }
+                h1{
+                    font-style: 42px;
+                    color: orangered;
+                }
+                p{
+                    text-align: justify;
+                    line-height: 30px;
+                }
+            }
+            .menu{
+                flex: 2;
             }
         }
     }
