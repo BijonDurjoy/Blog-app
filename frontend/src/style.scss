@@ -1,4 +1,4 @@
-$lightGreen : #9ed4bb;
+
 .app{
     display: flex;
     justify-content: center;
@@ -16,19 +16,19 @@ $lightGreen : #9ed4bb;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: $lightGreen;
+            background-color: none;
         }
 
         h1{
             font-size: 20px;
-            color: rgb(8, 117, 117);
+            color: orangered;
             margin-bottom: 20px;
         }
         form{
             display: flex;
             flex-direction: column;
             padding: 50px;
-            background: white;
+            background: lightgray;
             width: 200px;
             gap: 20px;
 
@@ -40,7 +40,7 @@ $lightGreen : #9ed4bb;
             button{
                 padding: 10px;
                 border: none;
-                background-color: teal;
+                background-color: orangered;
                 cursor: pointer;
                 color: white;
             }
@@ -210,6 +210,81 @@ $lightGreen : #9ed4bb;
             }
             .menu{
                 flex: 2;
+            }
+        }
+
+        //Write page 
+        .add{
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+
+            .content{
+                flex: 5;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                input{
+                    padding: 10px;
+                    border: 1px solid orangered;
+                }
+
+                .editorContainer{
+                    height: 300px;
+                    overflow: scroll;
+                    border: 1px solid lightgray;
+
+                    .editor{
+                        height: 300px;
+                        border: none;
+                    }
+                }
+            }
+
+            .menu{
+                flex: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                .item{
+                    border: 1px solid lightgray;
+                    padding: 5px;
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    font-size: 16px;
+                    color: #555;
+
+                    h1{
+                        font-size: 25px;
+                    }
+                    .file{
+                        text-decoration: underline;
+                        cursor: pointer;
+                    }
+
+                    .buttons{
+                        display: flex;
+                        justify-content: space-between;
+
+                        button{
+                            cursor: pointer;
+                            color: white;
+                            background-color: orangered;
+                            border: 1px solid orangered;
+                            padding: 3px 5px;
+                        }
+                    }
+                    .cat{
+                        display: flex;
+                        align-items: center;
+                        gap: 2px;
+                        color: orangered;
+                    }
+                }
             }
         }
     }
