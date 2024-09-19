@@ -5,6 +5,7 @@ import { login, logout, register } from '../controllers/auth.js'
 
 const router = express.Router()
 
+//For database testing purpose
 router.get("/", (req,res) =>{
     const query = "SELECT * FROM users";
 
