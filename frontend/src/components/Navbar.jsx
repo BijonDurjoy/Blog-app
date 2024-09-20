@@ -8,7 +8,9 @@ const Navbar = () => {
     <div className="navbar">
       <div className="container">
         <div className="logo">
+          <Link to="/">
           <img src="https://riseuplabs.com/wp-content/uploads/2021/03/substitution-of-colors-in-riseup-labs-logo.png" alt="Riseup labs logo" />
+          </Link>
         </div>
         <div className="links">
           <Link className='link' to="/?cat=art">
