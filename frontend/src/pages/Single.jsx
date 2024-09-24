@@ -20,31 +20,33 @@ const Single = () => {
       try {
         const res = await axios.get(`http://localhost:4500/api/posts/${postId}`)
         setPost(res.data);
-      } catch(err) {
+      } catch (err) {
         console.log(err);
       }
     }
     fetchData();
   }, [postId]);
 
-  const handleDelete = async () =>{
+  const handleDelete = async () => {
+    const token = localStorage.getItem("access_token"); 
     try {
-      await axios.delete(`http://localhost:4500/api/posts/${postId}`)
-      navigate("/")
-    } catch(err) {
+      await axios.delete(`http://localhost:4500/api/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
+      navigate("/");
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <div className='single'>
       <div className="content">
-        <img
-          src={post?.img}
-          alt=''
-        />
+        <img src={post?.img} alt='' />
         <div className="user">
-          {post.userImg && <img src={post.userImg}/>}
+          {post.userImg && <img src={post.userImg} alt="User" />}
           <div className="info">
             <span>{post?.username}</span>
             <p>Posted 2 days ago</p>
@@ -52,18 +54,17 @@ const Single = () => {
           {currentUser?.username === post.username && (
             <div className="edit">
               <Link to={`/write?edit=2`}>
-                <img src={Edit} alt="" />
+                <img src={Edit} alt="Edit" />
               </Link>
-              <img onClick={handleDelete} src={Delete} alt="" />
+              <img onClick={handleDelete} src={Delete} alt="Delete" />
             </div>
           )}
         </div>
         <h1>{post.title}</h1>
-        {post.des}
+        <p>{post.des}</p>
       </div>
-
     </div>
   )
 }
 
-export default Single
+export default Single;
