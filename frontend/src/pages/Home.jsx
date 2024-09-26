@@ -55,7 +55,7 @@ const Home = () => {
             <img src={post.img} />
           </div>
           <div className="content">
-            <Link className='link' to={`/post/${post.id}`}>
+            <Link className='link' to={`../upload/${post.img}`}>
             <h1>{post.title}</h1>
             </Link>
             <p>{post.des}</p>
