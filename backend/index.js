@@ -5,6 +5,7 @@ import postRoutes from "./routes/posts.js"
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import multer from "multer"
+import path from  "path";
 
 const app = express();
 
@@ -17,14 +18,15 @@ const storage = multer.diskStorage({
       cb(null, '../frontend/public/upload')
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now()+file.originalname)
+      cb(null, Date.now()+ path.extname(file.originalname)) //ensure the file extension
     }
   })
 const upload = multer({ storage })
 
 app.post('/api/upload', upload.single('file'), function (req, res) {
     const file = req.file;
-    res.status(200).json(file.filename)
+    const fileUrl = `http://localhost:4500/upload/${file.filename}`;
+    res.status(200).json(fileUrl); //send back to the full url
   })
 
 app.use(express.json());

@@ -1,0 +1,26 @@
+CREATE TABLE users (
+    id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(25) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    img VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE posts (
+    id INT NOT NULL AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    des VARCHAR(1000) NOT NULL,
+    img VARCHAR(255) NOT NULL,
+    date DATETIME NOT NULL,
+    uid INT NOT NULL,
+    PRIMARY KEY (id),
+    INDEX uid_idx (uid ASC),
+    CONSTRAINT fk_uid
+    FOREIGN KEY (uid)
+    REFERENCES blog.users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
