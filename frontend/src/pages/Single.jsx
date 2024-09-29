@@ -1,29 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Edit from "../img/edit.png"
-import Delete from "../img/delete.png"
+import React, { useContext, useEffect, useState } from 'react';
+import Edit from "../img/edit.png";
+import Delete from "../img/delete.png";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/authContext';
 
 const Single = () => {
-  const [post, setPost] = useState({})
-
-  const location = useLocation()
-  const navigate = useNavigate()
-
-  const postId = location.pathname.split("/")[2]
-
-  const { currentUser } = useContext(AuthContext)
+  const [post, setPost] = useState({});
+  const location = useLocation();
+  const navigate = useNavigate();
+  const postId = location.pathname.split("/")[2];
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:4500/api/posts/${postId}`)
+        const res = await axios.get(`http://localhost:4500/api/posts/${postId}`);
+        console.log("Fetched Post Data:", res.data); // Check the fetched data
         setPost(res.data);
       } catch (err) {
         console.log(err);
       }
-    }
+    };
     fetchData();
   }, [postId]);
 
@@ -41,14 +39,16 @@ const Single = () => {
     }
   };
 
-  const getText = (html) =>{
+  const getText = (html) => {
     const doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent
-  }
+    return doc.body.textContent;
+  };
+
   return (
     <div className='single'>
       <div className="content">
-        <img src={`../upload/${post?.img}`} alt='' />
+        {/* Use the complete URL to fetch the image */}
+        <img src={post?.img} alt='' />
         <div className="user">
           {post.userImg && <img src={post.userImg} alt="User" />}
           <div className="info">
@@ -68,7 +68,7 @@ const Single = () => {
         {getText(post.des)}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Single;
