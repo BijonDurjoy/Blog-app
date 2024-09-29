@@ -11,7 +11,7 @@ const Home = () => {
       try{
         const res = await axios.get(`http://localhost:4500/api/posts${cat}`)
         setPosts(res.data);
-      }catch{
+      }catch(err){
         console.log(err);
       }
     }
