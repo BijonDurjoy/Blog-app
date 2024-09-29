@@ -10,17 +10,17 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 
-// __dirname এর জন্য
+// for dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CORS সেটআপ
+// CORS 
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
 
-// মুলটার স্টোরেজ সেটআপ
+// multer storage setup
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, path.join(__dirname, '../frontend/public/upload'));
@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// ইমেজ আপলোড রুট
+// img  upload
 app.post('/api/upload', upload.single('file'), function (req, res) {
     const file = req.file;
     if (!file) {
@@ -41,19 +41,19 @@ app.post('/api/upload', upload.single('file'), function (req, res) {
     res.status(200).json({ url: fileUrl }); // send back as object
 });
 
-// স্ট্যাটিক ফাইল সার্ভ করা
+// serve the static file
 app.use('/upload', express.static(path.join(__dirname, '../frontend/public/upload')));
 
-// অন্যান্য মিডলওয়্যার
+
 app.use(express.json());
 app.use(cookieParser());
 
-// রাউট সেটআপ
+// route set up
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 
-// সার্ভার লিসেন
+// server port set 
 app.listen(4500, () => {
     console.log("Connected to the server at 4500");
 });

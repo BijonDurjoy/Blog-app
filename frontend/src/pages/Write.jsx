@@ -17,12 +17,12 @@ const Write = () => {
   const token = localStorage.getItem("access_token");
 
   const upload = async () => {
-    if (!file) return ""; // ফাইল না থাকলে খালি স্ট্রিং রিটার্ন করুন
+    if (!file) return ""; 
     try {
       const formData = new FormData();
       formData.append("file", file);
       const res = await axios.post("http://localhost:4500/api/upload", formData);
-      return res.data.url; // নিশ্চিত করুন যে res.data.url রিটার্ন হচ্ছে
+      return res.data.url; 
     } catch (err) {
       console.log(err);
       return "";
@@ -39,7 +39,7 @@ const Write = () => {
           title,
           des: value,
           cat,
-          img: imgUrl, // ফাইল থাকলে imgUrl, না থাকলে খালি স্ট্রিং
+          img: imgUrl, 
         }, {
           headers: {
             Authorization: `Bearer ${token}`, // send token in header
