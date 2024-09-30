@@ -40,3 +40,16 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
 
 3. Create database and make tables using `Database_command.txt` 
 
+
+## My Tasks:
+* Show text information when updating
+* Pagination
+* Adding Image upload Feature 
+* Catagory wise Naviation 
+
+## Demo Video 
+
+https://github.com/user-attachments/assets/02618f02-be71-4924-ac3b-6857683f7f09
+
+
+
