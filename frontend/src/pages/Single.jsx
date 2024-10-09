@@ -4,6 +4,7 @@ import Delete from "../img/delete.png";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/authContext';
+import Comments from '../components/Comments';
 
 const Single = () => {
   const [post, setPost] = useState({});
@@ -67,6 +68,8 @@ const Single = () => {
         <h1>{post.title}</h1>
         {getText(post.des)}
       </div>
+      {/* Comment section add in blogpage*/}
+      <Comments posId={postId} />
     </div>
   );
 };
