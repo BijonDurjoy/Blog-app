@@ -2,14 +2,18 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/authContext';
 import axios from 'axios';
 
-const Comments = ({ posId }) => {
+const Comments = ({ postId }) => {
     const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState('');
     const { currentUser } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
+    const [error,setError] = useState(null);
 
     useEffect(() => {
-        fetchComments();
-    }, [posId]);
+        if(postId){
+            fetchComments();
+        }
+    }, [postId]);
 
     const fetchComments = async () => {
         try {
@@ -43,6 +47,7 @@ const Comments = ({ posId }) => {
             setCommentText('');
         }catch(err){
             console.log(err);
+            alert("Failed to add a comment")
         }
     }
     return (
