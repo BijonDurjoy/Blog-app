@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
+import commentRoutes from './routes/comments.js';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import multer from "multer";
@@ -26,7 +27,7 @@ const storage = multer.diskStorage({
       cb(null, path.join(__dirname, '../frontend/public/upload'));
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname)); // ফাইল এক্সটেনশন নিশ্চিত করা
+      cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 const upload = multer({ storage });
@@ -52,6 +53,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 // server port set 
 app.listen(4500, () => {
