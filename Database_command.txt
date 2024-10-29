@@ -3,7 +3,7 @@ CREATE TABLE users (
     username VARCHAR(25) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    img VARCHAR(255) NOT NULL,
+    img VARCHAR(255) DEFAULT NULL, -- Allow NULL values for img
     PRIMARY KEY (id)
 );
 
@@ -12,16 +12,17 @@ CREATE TABLE posts (
     id INT NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     des VARCHAR(1000) NOT NULL,
-    img VARCHAR(255) NOT NULL,
+    img VARCHAR(255) DEFAULT NULL, -- Allows NULL in case of missing image
     date DATETIME NOT NULL,
     uid INT NOT NULL,
+    cat VARCHAR(50), -- New column to store the category if required
     PRIMARY KEY (id),
     INDEX uid_idx (uid ASC),
     CONSTRAINT fk_uid
-    FOREIGN KEY (uid)
-    REFERENCES blog.users(id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+        FOREIGN KEY (uid)
+        REFERENCES blog.users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 -- Table to store comments on posts
