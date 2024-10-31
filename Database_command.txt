@@ -28,8 +28,8 @@ CREATE TABLE posts (
 -- Table to store comments on posts
 CREATE TABLE comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    post_id INT NOT NULL,  -- Foreign key for posts
-    user_id INT NOT NULL,  -- Assuming you have a users table
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
     comment TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
@@ -38,8 +38,8 @@ CREATE TABLE comments (
 -- Table to store replies to comments
 CREATE TABLE replies (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    comment_id INT NOT NULL,  -- Foreign key for comments
-    user_id INT NOT NULL,     -- Assuming you have a users table
+    comment_id INT NOT NULL,
+    user_id INT NOT NULL,
     reply TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE

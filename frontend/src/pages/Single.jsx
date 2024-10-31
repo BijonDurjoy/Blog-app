@@ -69,7 +69,7 @@ const Single = () => {
         {getText(post.des)}
       </div>
       {/* Comment section add in blogpage*/}
-      <Comments posId={postId} />
+      <Comments postId={postId} />
     </div>
   );
 };
