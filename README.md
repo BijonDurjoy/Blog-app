@@ -25,6 +25,9 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
     ``` bash
     cd Blog-app
 
+3. Install dependencies
+4. Create database and all tables by using "Database_command.txt" file
+
 
 ## Usage
 1. Install dependencies: Install require packages for run the project 
