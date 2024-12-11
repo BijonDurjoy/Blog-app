@@ -44,3 +44,24 @@ CREATE TABLE replies (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 );
+
+--Table for Like in comment and reply
+CREATE TABLE comment_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    comment_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (comment_id, user_id)
+);
+
+CREATE TABLE reply_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reply_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reply_id) REFERENCES replies(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (reply_id, user_id) -- একটি ইউজার একটি রিপ্লাইতে একবারই লাইক দিতে পারবে
+);
