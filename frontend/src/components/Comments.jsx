@@ -13,7 +13,6 @@ const Comments = ({ postId }) => {
 
     useEffect(() => {
         if (postId) {
-            console.log("Fetching comments for post ID:", postId); // Debug log
             fetchComments();
         }
     }, [postId]);
@@ -23,12 +22,9 @@ const Comments = ({ postId }) => {
         setError(null);
         try {
             const res = await axios.get(`http://localhost:4500/api/comments/${postId}`);
-            console.log("Raw API response:", res.data); // Debug log
             const formattedComments = formatComments(res.data);
-            console.log("Formatted comments:", formattedComments); // Debug log
             setComments(formattedComments);
         } catch (err) {
-            console.error("Error fetching comments:", err);
             setError("Failed to fetch comments");
         } finally {
             setLoading(false);
@@ -36,13 +32,7 @@ const Comments = ({ postId }) => {
     };
 
     const formatComments = (rawComments) => {
-        if (!Array.isArray(rawComments)) {
-            console.error("Raw comments is not an array:", rawComments);
-            return [];
-        }
-
         const commentMap = new Map();
-        
         rawComments.forEach(comment => {
             if (!commentMap.has(comment.commentId)) {
                 commentMap.set(comment.commentId, {
@@ -50,10 +40,10 @@ const Comments = ({ postId }) => {
                     comment: comment.comment,
                     username: comment.username,
                     created_at: comment.created_at,
+                    likes: comment.commentLikes || 0,
                     replies: []
                 });
             }
-
             if (comment.replyId) {
                 const parentComment = commentMap.get(comment.commentId);
                 if (parentComment) {
@@ -61,33 +51,27 @@ const Comments = ({ postId }) => {
                         id: comment.replyId,
                         reply: comment.reply,
                         username: comment.replyUser,
-                        created_at: comment.reply_created_at
+                        created_at: comment.reply_created_at,
+                        likes: comment.replyLikes || 0
                     });
                 }
             }
         });
-
         return Array.from(commentMap.values());
     };
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
         if (!commentText.trim()) return;
-        
         try {
-            const res = await axios.post('http://localhost:4500/api/comments/add', {
+            await axios.post('http://localhost:4500/api/comments/add', {
                 postId,
                 userId: currentUser.id,
                 comment: commentText
             });
-
-            console.log("New comment response:", res.data); // Debug log
-
-            // Refresh comments after posting
             fetchComments();
             setCommentText('');
         } catch (err) {
-            console.error("Error adding comment:", err);
             alert("Failed to add comment");
         }
     };
@@ -95,23 +79,30 @@ const Comments = ({ postId }) => {
     const handleReplySubmit = async (e, commentId) => {
         e.preventDefault();
         if (!replyText.trim()) return;
-
         try {
-            const res = await axios.post('http://localhost:4500/api/comments/reply', {
+            await axios.post('http://localhost:4500/api/comments/reply', {
                 commentId,
                 userId: currentUser.id,
                 reply: replyText
             });
-
-            console.log("New reply response:", res.data); // Debug log
-
-            // Refresh comments after posting reply
             fetchComments();
             setReplyText('');
             setReplyToCommentId(null);
         } catch (err) {
-            console.error("Error adding reply:", err);
             alert("Failed to add reply");
+        }
+    };
+
+    const handleLike = async (type, id) => {
+        try {
+            const url =
+                type === "comment"
+                    ? `http://localhost:4500/api/comments/like/comment/${id}`
+                    : `http://localhost:4500/api/comments/like/reply/${id}`;
+            await axios.post(url, { userId: currentUser.id });
+            fetchComments();
+        } catch (err) {
+            alert("You have already liked this " + type);
         }
     };
 
@@ -144,6 +135,12 @@ const Comments = ({ postId }) => {
                             </span>
                         </div>
                         <p className="comment-text">{comment.comment}</p>
+                        <button 
+                            className="like-button" 
+                            onClick={() => handleLike("comment", comment.id)}
+                        >
+                            Like ({comment.likes})
+                        </button>
                         
                         {currentUser && (
                             <button 
@@ -179,6 +176,12 @@ const Comments = ({ postId }) => {
                                         </span>
                                     </div>
                                     <p className="reply-text">{reply.reply}</p>
+                                    <button 
+                                        className="like-button" 
+                                        onClick={() => handleLike("reply", reply.id)}
+                                    >
+                                        Like ({reply.likes})
+                                    </button>
                                 </div>
                             ))}
                         </div>
