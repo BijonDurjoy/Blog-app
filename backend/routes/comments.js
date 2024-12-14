@@ -76,12 +76,12 @@ router.get('/:postId', (req, res) => {
     `;
 
     const replyQuery = `
-        SELECT 
-            r.id AS replyId, r.reply, r.comment_id, r.created_at, ru.username AS replyUser,
-            (SELECT COUNT(*) FROM reply_likes rl WHERE rl.reply_id = r.id) AS replyLikes
-        FROM replies r
-        LEFT JOIN users ru ON r.user_id = ru.id;
-    `;
+    SELECT 
+        r.id AS replyId, r.reply, r.comment_id, r.created_at, ru.username AS replyUser ,
+        (SELECT COUNT(*) FROM reply_likes rl WHERE rl.reply_id = r.id) AS replyLikes
+    FROM replies r
+    LEFT JOIN users ru ON r.user_id = ru.id;
+`;
 
     db.query(commentQuery, [postId], (err, comments) => {
         if (err) {

@@ -22,42 +22,12 @@ const Comments = ({ postId }) => {
         setError(null);
         try {
             const res = await axios.get(`http://localhost:4500/api/comments/${postId}`);
-            const formattedComments = formatComments(res.data);
-            setComments(formattedComments);
+            setComments(res.data);
         } catch (err) {
             setError("Failed to fetch comments");
         } finally {
             setLoading(false);
         }
-    };
-
-    const formatComments = (rawComments) => {
-        const commentMap = new Map();
-        rawComments.forEach(comment => {
-            if (!commentMap.has(comment.commentId)) {
-                commentMap.set(comment.commentId, {
-                    id: comment.commentId,
-                    comment: comment.comment,
-                    username: comment.username,
-                    created_at: comment.created_at,
-                    likes: comment.commentLikes || 0,
-                    replies: []
-                });
-            }
-            if (comment.replyId) {
-                const parentComment = commentMap.get(comment.commentId);
-                if (parentComment) {
-                    parentComment.replies.push({
-                        id: comment.replyId,
-                        reply: comment.reply,
-                        username: comment.replyUser,
-                        created_at: comment.reply_created_at,
-                        likes: comment.replyLikes || 0
-                    });
-                }
-            }
-        });
-        return Array.from(commentMap.values());
     };
 
     const handleCommentSubmit = async (e) => {
@@ -109,7 +79,10 @@ const Comments = ({ postId }) => {
     return (
         <div className="comments-section">
             <h3>Comments ({comments.length})</h3>
-            
+
+            {loading && <p>Loading comments...</p>}
+            {error && <p className="error">{error}</p>}
+
             {currentUser && (
                 <form onSubmit={handleCommentSubmit} className="comment-form">
                     <textarea
@@ -122,12 +95,10 @@ const Comments = ({ postId }) => {
                 </form>
             )}
 
-            {loading && <p>Loading comments...</p>}
-            {error && <p className="error">{error}</p>}
-
             <div className="comments-list">
                 {comments.map((comment) => (
-                    <div key={comment.id} className="comment">
+                    <div key={comment.commentId} className="comment">
+                        {/* Comment Details */}
                         <div className="comment-header">
                             <strong>{comment.username}</strong>
                             <span className="date">
@@ -135,56 +106,62 @@ const Comments = ({ postId }) => {
                             </span>
                         </div>
                         <p className="comment-text">{comment.comment}</p>
-                        <button 
-                            className="like-button" 
-                            onClick={() => handleLike("comment", comment.id)}
+                        <button
+                            className="like-button"
+                            onClick={() => handleLike("comment", comment.commentId)}
                         >
-                            Like ({comment.likes})
+                            Like ({comment.commentLikes})
                         </button>
-                        
-                        {currentUser && (
-                            <button 
-                                className="reply-button"
-                                onClick={() => setReplyToCommentId(comment.id)}
-                            >
-                                Reply
-                            </button>
-                        )}
 
-                        {replyToCommentId === comment.id && (
-                            <form 
-                                onSubmit={(e) => handleReplySubmit(e, comment.id)} 
-                                className="reply-form"
-                            >
-                                <textarea
-                                    placeholder="Write a reply..."
-                                    value={replyText}
-                                    onChange={(e) => setReplyText(e.target.value)}
-                                    required
-                                />
-                                <button type="submit">Post Reply</button>
-                            </form>
-                        )}
-
-                        <div className="replies">
-                            {comment.replies.map((reply) => (
-                                <div key={reply.id} className="reply">
-                                    <div className="reply-header">
-                                        <strong>{reply.username}</strong>
-                                        <span className="date">
-                                            {new Date(reply.created_at).toLocaleString()}
-                                        </span>
+                        {/* Reply Section */}
+                        {comment.replies && comment.replies.length > 0 && (
+                            <div className="replies">
+                                <h4>Replies ({comment.replies.length})</h4>
+                                {comment.replies.map((reply) => (
+                                    <div key={reply.replyId} className="reply">
+                                        <div className="reply-header">
+                                            <strong>{reply.replyUser}</strong>
+                                            <span className="date">
+                                                {new Date(reply.created_at).toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <p className="reply-text">{reply.reply}</p>
+                                        <button
+                                            className="like-button"
+                                            onClick={() => handleLike("reply", reply.replyId)}
+                                        >
+                                            Like ({reply.replyLikes})
+                                        </button>
                                     </div>
-                                    <p className="reply-text">{reply.reply}</p>
-                                    <button 
-                                        className="like-button" 
-                                        onClick={() => handleLike("reply", reply.id)}
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Add Reply */}
+                        {currentUser && (
+                            <div>
+                                <button
+                                    className="reply-button"
+                                    onClick={() => setReplyToCommentId(comment.commentId)}
+                                >
+                                    Reply
+                                </button>
+                                {replyToCommentId === comment.commentId && (
+                                    <form
+                                        onSubmit={(e) => handleReplySubmit(e, comment.commentId)}
+                                        className="reply-form"
                                     >
-                                        Like ({reply.likes})
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                                        <textarea
+                                            placeholder="Write a reply..."
+                                            value={replyText}
+                                            onChange={(e) => setReplyText(e.target.value)}
+                                            required
+                                        />
+                                        <button type="submit">Post Reply</button>
+                                    </form>
+                                )}
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
