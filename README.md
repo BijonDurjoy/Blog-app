@@ -48,7 +48,10 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
 * Show text information when updating
 * Pagination
 * Adding Image upload Feature 
-* Catagory wise Naviation 
+* Catagory wise Naviation
+* Re-structure the homepage
+* Comment - Reply add for a valid user.
+* Like option addded for comment- reply.
 
 ## Demo Video 
 
