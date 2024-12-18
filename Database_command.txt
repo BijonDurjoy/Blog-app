@@ -63,5 +63,21 @@ CREATE TABLE reply_likes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (reply_id) REFERENCES replies(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE (reply_id, user_id) -- একটি ইউজার একটি রিপ্লাইতে একবারই লাইক দিতে পারবে
+    UNIQUE (reply_id, user_id) 
 );
+
+-- Tags Table
+CREATE TABLE tags (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Post_Tags Junction Table
+CREATE TABLE post_tags (
+    post_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (post_id, tag_id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+);
+
