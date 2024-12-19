@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from 'url';
+import tagRoutes from './routes/tags.js';
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
+app.use('/api/tags', tagRoutes);
 
 // server port set 
 app.listen(4500, () => {
