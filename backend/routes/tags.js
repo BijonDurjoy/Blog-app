@@ -47,6 +47,20 @@ router.get('/', (req, res) => {
     });
 });
 
+//Fetch tags for a specific post
+router.get('/post/:postId', (req, res) => {
+    const { postId } = req.params;
+    const query = `
+        SELECT t.name FROM tags t
+        JOIN post_tags pt ON t.id = pt.tag_id
+        WHERE pt.post_id = ?;
+    `;
+    db.query(query, [postId], (err, tags) => {
+        if (err) return res.status(500).json({ error: 'Failed to fetch tags.' });
+        res.status(200).json(tags);
+    });
+});
+
 // Associate tags with a post
 router.post('/associate', (req, res) => {
     const { postId, tagIds } = req.body;
@@ -57,12 +71,27 @@ router.post('/associate', (req, res) => {
     }
 
     const values = tagIds.map(tagId => [postId, tagId]);
-    const query = 'INSERT INTO post_tags (post_id, tag_id) VALUES ?';
+    const query = 'INSERT INTO post_tags (post_id, tag_id) VALUES ? ON DUPLICATE KEY UPDATE tag_id = tag_id'; // Prevent duplicates
     db.query(query, [values], (err, result) => {
         if (err) {
+            console.error(err); // Log the error for debugging
             return res.status(500).json({ error: 'Failed to associate tags with the post' });
         }
         res.status(200).json({ message: 'Tags associated successfully' });
+    });
+});
+
+//Fetch related post by tag
+router.get('/related/:tagId', (req, res) => {
+    const { tagId } = req.params;
+    const query = `
+        SELECT p.* FROM posts p
+        JOIN post_tags pt ON p.id = pt.post_id
+        WHERE pt.tag_id = ?;
+    `;
+    db.query(query, [tagId], (err, posts) => {
+        if (err) return res.status(500).json({ error: 'Failed to fetch related posts.' });
+        res.status(200).json(posts);
     });
 });
 
