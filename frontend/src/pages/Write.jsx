@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
@@ -12,9 +12,26 @@ const Write = () => {
   const [title, setTitle] = useState(state?.title || "");
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(state?.cat || "");
+  const [tags, setTags] = useState([]); // All tags fetched from backend
+  const [selectedTags, setSelectedTags] = useState([]); // Tags selected by the user
+  const [newTag, setNewTag] = useState(''); // New tag name
+  const [loading, setLoading] = useState(false); // Loading state for adding tags
 
   // To retrieve the token
   const token = localStorage.getItem("access_token");
+
+  // Fetch available tags on component mount
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await axios.get("http://localhost:4500/api/tags");
+        setTags(res.data);
+      } catch (err) {
+        console.error("Error fetching tags:", err);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const upload = async () => {
     if (!file) return ""; 
@@ -28,34 +45,35 @@ const Write = () => {
       return "";
     }
   };
+
   const handleClick = async (e) => {
     e.preventDefault();
     const imgUrl = await upload();
 
     try {
       if (state) {
-        // Put request with token
         await axios.put(`http://localhost:4500/api/posts/${state.id}`, {
           title,
           des: value,
           cat,
-          img: imgUrl, 
+          img: imgUrl,
+          tagIds: selectedTags, // Include selected tags
         }, {
           headers: {
-            Authorization: `Bearer ${token}`, // send token in header
+            Authorization: `Bearer ${token}`,
           }
         });
       } else {
-        // Post request with token
         await axios.post(`http://localhost:4500/api/posts`, {
           title,
           des: value,
           cat,
           img: imgUrl,
+          tagIds: selectedTags, // Include selected tags
           date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
         }, {
           headers: {
-            Authorization: `Bearer ${token}`, // send token in header
+            Authorization: `Bearer ${token}`,
           }
         });
       }
@@ -65,7 +83,26 @@ const Write = () => {
     }
   };
 
-  console.log("Post Description:", value);
+  const handleTagSelection = (tagId) => {
+    setSelectedTags((prev) =>
+      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]
+    );
+  };
+
+  const handleAddTag = async () => {
+    if (!newTag.trim()) return alert('Tag name cannot be empty.');
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:4500/api/tags", { name: newTag });
+      setTags([...tags, res.data]); // Update tag list with the new tag
+      setNewTag(''); // Clear the input box
+    } catch (err) {
+      console.error("Error adding new tag:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="add">
       <div className="content">
@@ -119,6 +156,32 @@ const Write = () => {
               <label htmlFor={category}>{category.charAt(0).toUpperCase() + category.slice(1)}</label>
             </div>
           ))}
+        </div>
+        <div className="item">
+          <h1>Tags</h1>
+          <div className="tags">
+            {tags.map((tag) => (
+              <label key={tag.id}>
+                <input
+                  type="checkbox"
+                  value={tag.id}
+                  onChange={() => handleTagSelection(tag.id)}
+                />
+                {tag.name}
+              </label>
+            ))}
+          </div>
+          <div className="new-tag">
+            <input
+              type="text"
+              placeholder="Add new tag"
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+            />
+            <button onClick={handleAddTag} disabled={loading}>
+              {loading ? "Adding..." : "Add Tag"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

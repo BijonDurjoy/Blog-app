@@ -8,6 +8,7 @@ import Comments from '../components/Comments';
 
 const Single = () => {
   const [post, setPost] = useState({});
+  const [tags, setTags] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
   const postId = location.pathname.split("/")[2];
@@ -16,11 +17,13 @@ const Single = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:4500/api/posts/${postId}`);
-        console.log("Fetched Post Data:", res.data); // Check the fetched data
-        setPost(res.data);
+        const postRes = await axios.get(`http://localhost:4500/api/posts/${postId}`);
+        setPost(postRes.data);
+
+        const tagsRes = await axios.get(`http://localhost:4500/api/tags/post/${postId}`);
+        setTags(tagsRes.data);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
     fetchData();
@@ -48,7 +51,6 @@ const Single = () => {
   return (
     <div className='single'>
       <div className="content">
-        {/* Use the complete URL to fetch the image */}
         <img src={post?.img} alt='' />
         <div className="user">
           {post.userImg && <img src={post.userImg} alt="User" />}
@@ -67,8 +69,17 @@ const Single = () => {
         </div>
         <h1>{post.title}</h1>
         {getText(post.des)}
+        <div className="tags">
+          <h4>Tags:</h4>
+          <div className="tag-container">
+            {tags.map((tag) => (
+              <button key={tag.id} className="tag-button">
+                {tag.name}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-      {/* Comment section add in blogpage*/}
       <Comments postId={postId} />
     </div>
   );
