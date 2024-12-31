@@ -13,12 +13,20 @@ export const getPosts = (req, res) => {
 }
 
 export const getPost = (req, res) => {
-  const q = "SELECT p.id, `username`, `title`, `des`, p.img, u.img AS userImg,`cat`,`date` FROM users u join posts p ON u.id = p.uid WHERE p.id=?"
+  const q = "SELECT p.id, `username`, `title`, `des`, p.img, u.img AS userImg, `cat`, `date`, `views` FROM users u JOIN posts p ON u.id = p.uid WHERE p.id = ?";
+
   db.query(q, [req.params.id], (err, data) => {
     if (err) return res.status(500).json(err);
-    return res.status(200).json(data[0])
-  })
-}
+
+    // Increment the views count
+    const updateViewsQuery = "UPDATE posts SET views = views + 1 WHERE id = ?";
+    db.query(updateViewsQuery, [req.params.id], (err, result) => {
+      if (err) return res.status(500).json(err);
+    });
+
+    return res.status(200).json(data[0]);
+  });
+};
 
 export const addPost = (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
