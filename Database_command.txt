@@ -84,3 +84,5 @@ CREATE TABLE post_tags (
 
 -- To add the view counts in every post
 ALTER TABLE posts ADD COLUMN views INT DEFAULT 0;
+
+--

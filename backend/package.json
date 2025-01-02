@@ -21,6 +21,6 @@
     "mysql": "^2.18.1",
     "nodemon": "^3.1.4",
     "path": "^0.12.7",
-    "react-quill": "^0.0.2"
+    "react-quill": "^2.0.0"
   }
 }

@@ -1,0 +1,17 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore build files
+dist/
+.vite/
+
+# Ignore environment variables
+.env
+.env.local
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+
+# Ignore logs
+*.log
