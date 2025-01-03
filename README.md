@@ -52,7 +52,8 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
 * Re-structure the homepage
 * Comment - Reply add for a valid user.
 * Like option addded for comment- reply.
-* Multiple Tags add for every post 
+* Multiple Tags add for every post
+* Add View Count for every post
 
 ## Demo Video 
 
