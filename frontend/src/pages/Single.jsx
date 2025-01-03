@@ -12,7 +12,7 @@ const Single = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const postId = location.pathname.split("/")[2];
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser   } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,12 +53,16 @@ const Single = () => {
       <div className="content">
         <img src={post?.img} alt='' />
         <div className="user">
-          {post.userImg && <img src={post.userImg} alt="User" />}
+          {post.userImg && <img src={post.userImg} alt="User  " />}
           <div className="info">
             <span>{post?.username}</span>
             <p>Posted 2 days ago</p>
+            {/* Display View Count Here */}
+            <div className="views">
+              <h4>Views Count: {post.views}</h4>
+            </div>
           </div>
-          {currentUser?.username === post.username && (
+          {currentUser  ?.username === post.username && (
             <div className="edit">
               <Link to={`/write?edit=2`} state={post}>
                 <img src={Edit} alt="Edit" />
