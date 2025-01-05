@@ -30,27 +30,41 @@ export const getPost = (req, res) => {
 
 export const addPost = (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-  if(!token) return  res.status(401).json("Not authenticated");
+  if (!token) return res.status(401).json("Not authenticated");
 
-  jwt.verify(token, "jwtkey", (err,userInfo) =>{
-    if(err) return res.status(403).json("Token is not valid");
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid");
 
-    const q = "INSERT INTO posts(`title`, `des`, `img`, `cat`, `date`, `uid`) VALUES (?)"
+    const q = "INSERT INTO posts(`title`, `des`, `img`, `cat`, `date`, `uid`) VALUES (?)";
     const values = [
       req.body.title,
       req.body.des,
       req.body.img,
       req.body.cat,
       req.body.date,
-      userInfo.id
-    ]
+      userInfo.id,
+    ];
 
-    db.query(q,[values], (err,data) =>{
-      if(err) return res.status(500).json(err);
-      return res.json("Post has been created successfully");
-    })
-  })
-}
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      const postId = data.insertId; // Get the ID of the newly inserted post
+
+      // Associate tags with the post
+      if (req.body.tagIds && Array.isArray(req.body.tagIds) && req.body.tagIds.length > 0) {
+        const tagAssociations = req.body.tagIds.map((tagId) => [postId, tagId]);
+        const tagQuery = "INSERT INTO post_tags (post_id, tag_id) VALUES ?";
+        db.query(tagQuery, [tagAssociations], (err) => {
+          if (err) return res.status(500).json("Failed to associate tags with the post.");
+          return res.json("Post and tags have been created successfully.");
+        });
+      } else {
+        return res.json("Post has been created successfully, but no tags were associated.");
+      }
+    });
+  });
+};
+
 
 export const deletePost = (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; 
@@ -72,25 +86,41 @@ export const deletePost = (req, res) => {
 
 export const updatePost = (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-  if(!token) return  res.status(401).json("Not authenticated");
+  if (!token) return res.status(401).json("Not authenticated");
 
-  jwt.verify(token, "jwtkey", (err,userInfo) =>{
-    if(err) return res.status(403).json("Token is not valid");
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid");
 
-    const postId = req.params.id
-    const q = "UPDATE posts SET `title` = ?, `des` = ?, `img` = ?, `cat` = ? WHERE `id` = ? AND `uid`=?";
+    const postId = req.params.id;
+    const q = "UPDATE posts SET `title` = ?, `des` = ?, `img` = ?, `cat` = ? WHERE `id` = ? AND `uid` = ?";
     const values = [
       req.body.title,
       req.body.des,
       req.body.img,
       req.body.cat,
       postId,
-      userInfo.id
-    ]
+      userInfo.id,
+    ];
 
-    db.query(q, values, (err,data) =>{
-      if(err) return res.status(500).json(err);
-      return res.json("Post has been updated successfully");
-    })
-  })
-}
+    db.query(q, values, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      // Update tag associations
+      if (req.body.tagIds && Array.isArray(req.body.tagIds)) {
+        const deleteQuery = "DELETE FROM post_tags WHERE post_id = ?";
+        db.query(deleteQuery, [postId], (err) => {
+          if (err) return res.status(500).json("Failed to remove old tag associations.");
+
+          const tagAssociations = req.body.tagIds.map((tagId) => [postId, tagId]);
+          const insertQuery = "INSERT INTO post_tags (post_id, tag_id) VALUES ?";
+          db.query(insertQuery, [tagAssociations], (err) => {
+            if (err) return res.status(500).json("Failed to associate new tags with the post.");
+            return res.json("Post and tags have been updated successfully.");
+          });
+        });
+      } else {
+        return res.json("Post has been updated successfully, but no tags were associated.");
+      }
+    });
+  });
+};
