@@ -55,13 +55,6 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
 * Multiple Tags add for every post
 * Add View Count for every post
 
-## Demo Video 
-
-https://github.com/user-attachments/assets/02618f02-be71-4924-ac3b-6857683f7f09
-
-## Add Comment-Reply box
-
-https://github.com/user-attachments/assets/c48c10e2-9ff3-4043-9aca-48440af9867f
 
 
 
