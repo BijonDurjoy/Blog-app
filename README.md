@@ -45,6 +45,7 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
 
 
 ## My Tasks:
+* User Authentication and validation
 * Show text information when updating
 * Pagination
 * Adding Image upload Feature 
