@@ -14,6 +14,7 @@ A simple blog application built with [Node.js](https://nodejs.org/) and [React](
 - Frontend: React
 - Backend: Node.js, Express.js
 - Database: MySQL
+- Tools: VS Cocde,Postman, Xampp
 
 ## Installation
 
